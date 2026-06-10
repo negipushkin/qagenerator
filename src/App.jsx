@@ -160,8 +160,7 @@ export default function App() {
 
           <DomainSelector value={domain} onChange={setDomain} />
 
-          <div className="flex items-center justify-between pt-2">
-            <p className="text-xs text-gray-400">Powered by GPT-4o · ~15–30 seconds</p>
+          <div className="flex items-center justify-end pt-2">
             <GenerateButton
               onClick={handleGenerate}
               loading={status === 'loading'}

@@ -4,6 +4,10 @@ export default function LandingHeader({ onStart, onExampleSelect }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <div className="max-w-3xl w-full text-center space-y-8 animate-fade-in">
+        <p className="text-sm text-gray-500">
+          Built by <span className="font-semibold text-indigo-600">Pushkin</span>
+        </p>
+
         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -61,6 +65,7 @@ export default function LandingHeader({ onStart, onExampleSelect }) {
             </div>
           ))}
         </div>
+
       </div>
     </div>
   )
