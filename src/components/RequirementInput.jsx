@@ -25,7 +25,15 @@ export default function RequirementInput({ value, onChange, error, onClear }) {
     setFileState({ name: file.name, loading: true, error: null })
     try {
       const text = await extractTextFromFile(file)
-      onChange(text.slice(0, MAX_CHARS))
+      if (text.length > MAX_CHARS) {
+        setFileState({
+          name: null,
+          loading: false,
+          error: `"${file.name}" contains ${text.length.toLocaleString()} characters — the limit is ${MAX_CHARS.toLocaleString()}. Please upload a shorter excerpt or paste a specific section of the document.`,
+        })
+        return
+      }
+      onChange(text)
       setFileState({ name: file.name, loading: false, error: null })
     } catch (err) {
       setFileState({ name: null, loading: false, error: err.message })
