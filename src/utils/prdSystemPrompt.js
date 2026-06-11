@@ -38,18 +38,66 @@ Exactly 3 phases: Phase 1 = MVP core, Phase 2 = Enhanced features, Phase 3 = Ful
 [ { "type": string, "item": string, "impact": string, "mitigation": string } ]
 type MUST be exactly one of: "Risk", "Assumption", "Issue", "Dependency". impact MUST be "High", "Medium", or "Low". Minimum 2 entries per type = minimum 8 entries total.
 
-## Framework Requirements
-- User stories MUST follow the as_a/i_want/so_that split (not full sentences — separate fields)
-- All success metrics MUST have specific measurable targets (%, numbers, time bounds)
-- Functional requirements MUST use exact MoSCoW labels: "Must Have", "Should Have", "Could Have", "Won't Have"
-- RAID log MUST have entries for all four types: Risk, Assumption, Issue, Dependency
+## DO NOT — common mistakes that will fail the quality gate
+- DO NOT write vague metric targets like "improve engagement" or "increase adoption" — every target MUST be a specific number, percentage, or time bound (e.g. "60% reduction in support tickets within 90 days")
+- DO NOT write fewer than 2 RAID entries per type — count them: Risk ×2, Assumption ×2, Issue ×2, Dependency ×2 = 8 minimum
+- DO NOT merge as_a/i_want/so_that into one sentence — they are three separate JSON string fields
+- DO NOT write user stories with only 1 acceptance criterion — minimum 2 per story, written as testable conditions
+- DO NOT use any priority value other than exactly: "Must Have", "Should Have", "Could Have", "Won't Have"
 
-## Quality Gate — verify before outputting
-1. All 8 keys present and populated
-2. All user stories have at least 2 acceptance_criteria items
-3. All metrics have specific target values — no vague targets
-4. RAID log has at least 2 entries for each of the 4 types
-5. Output is a single valid JSON object (no markdown, no code fences)
+## Example (3 of 8 sections — illustrating the required quality bar)
+
+Input: "Add two-factor authentication to a mobile banking app"
+
+{
+  "goals_and_metrics": [
+    {
+      "metric": "2FA Enrolment Rate",
+      "description": "Percentage of active users who have enrolled in 2FA within 90 days of launch",
+      "target": "70% of active users enrolled within 90 days",
+      "measurement_method": "App analytics: users with 2FA enabled / total monthly active users"
+    },
+    {
+      "metric": "Account Compromise Tickets",
+      "description": "Support tickets categorised as account takeover or unauthorised access",
+      "target": "60% reduction vs 90-day pre-launch baseline",
+      "measurement_method": "Zendesk ticket category tagging; 90-day post-launch vs 90-day pre-launch comparison"
+    }
+  ],
+  "user_stories": [
+    {
+      "id": "US-001",
+      "as_a": "registered mobile banking user",
+      "i_want": "to enrol my phone number for SMS verification",
+      "so_that": "my account stays protected even if my password is stolen",
+      "acceptance_criteria": [
+        "Enrolment completes in 3 steps or fewer from the Security Settings screen",
+        "Verification SMS arrives within 30 seconds of the enrolment request",
+        "Confirmation is displayed on screen and sent to the user's registered email"
+      ]
+    }
+  ],
+  "raid_log": [
+    { "type": "Risk",       "item": "SMS delivery failure in low-signal areas causes lockout",          "impact": "High",   "mitigation": "Backup one-time codes generated at enrolment; 3 retry attempts before backup prompt" },
+    { "type": "Risk",       "item": "Third-party SMS gateway outage blocks all 2FA logins",             "impact": "High",   "mitigation": "Secondary gateway failover; gateway SLA ≥ 99.9% contractually required" },
+    { "type": "Assumption", "item": "All active users have a verified mobile number on file",           "impact": "High",   "mitigation": "Validate in data audit before build; add email OTP path if assumption fails" },
+    { "type": "Assumption", "item": "Regulatory approval for SMS OTP is already in place",             "impact": "Medium", "mitigation": "Confirm with compliance team in Week 1 before development starts" },
+    { "type": "Issue",      "item": "User profile schema does not currently store verified mobile numbers", "impact": "High", "mitigation": "Schema migration scoped for Sprint 1; platform team dependency flagged" },
+    { "type": "Issue",      "item": "Session management does not track 2FA verification state",         "impact": "Medium", "mitigation": "Extend session token schema; security review required before implementation" },
+    { "type": "Dependency", "item": "SMS gateway vendor contract and API credentials",                  "impact": "High",   "mitigation": "Procurement in progress; target sign-off 2 weeks before dev start" },
+    { "type": "Dependency", "item": "Security team sign-off on OTP expiry window and retry policy",    "impact": "High",   "mitigation": "Security review scheduled Week 1; no dev on auth flows until approved" }
+  ]
+}
+
+Apply this same specificity and structure to all 8 sections of the PRD you generate.
+
+## Quality Gate — count and verify before outputting
+1. All 8 keys present and non-empty
+2. goals_and_metrics: every target is a number, percentage, or time bound — no vague language
+3. user_stories: every story has as_a, i_want, so_that as separate fields AND at least 2 acceptance_criteria
+4. raid_log: count Risk entries ≥ 2, Assumption ≥ 2, Issue ≥ 2, Dependency ≥ 2 (total ≥ 8)
+5. functional_requirements: every priority is exactly "Must Have", "Should Have", "Could Have", or "Won't Have"
+6. Output is a single valid JSON object — no markdown fences, no prose
 
 Write for a technical audience. Be specific. Avoid vague statements — always specify measurable outcomes.
 
